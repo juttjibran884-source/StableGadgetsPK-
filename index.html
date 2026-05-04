@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GearDrop — Mobile Accessories</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black: #0a0a0a;
+    --off-black: #111;
+    --card: #161616;
+    --border: #2a2a2a;
+    --accent: #ff3c3c;
+    --accent2: #ff8c00;
+    --text: #f0ede8;
+    --muted: #888;
+    --tag: #1e1e1e;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    width: 10px; height: 10px;
+    background: var(--accent);
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none; z-index: 9999;
+    transition: transform 0.1s;
+    mix-blend-mode: difference;
+  }
+  .cursor-ring {
+    width: 36px; height: 36px;
+    border: 1.5px solid var(--accent);
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none; z-index: 9998;
+    transition: all 0.15s ease;
+    mix-blend-mode: difference;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--off-black); }
+  ::-webkit-scrollbar-thumb { background: var(--accent); }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 28px;
+    background: rgba(10,10,10,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 2px;
+    color: var(--text);
+  }
+  .logo span { color: var(--accent); }
+
+  .nav-links {
+    display: flex; gap: 28px; list-style: none;
+  }
+  .nav-links a {
+    font-size: 13px; font-weight: 500; letter-spacing: 1px;
+    text-decoration: none; color: var(--muted);
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--text); }
+
+  .nav-cta {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px; letter-spacing: 1px;
+    background: var(--accent);
+    color: #fff; border: none;
+    padding: 9px 20px;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: background 0.2s;
+  }
+  .nav-cta:hover { background: #cc2a2a; }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    justify-content: flex-end;
+    padding: 0 28px 60px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 70% 30%, #1a0a00 0%, #0a0a0a 60%);
+  }
+  .hero-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 60px 60px;
+    opacity: 0.35;
+    animation: gridDrift 20s linear infinite;
+  }
+  @keyframes gridDrift {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(60px); }
+  }
+
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px; letter-spacing: 2px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    position: relative;
+  }
+  .hero-badge::before {
+    content: ''; width: 24px; height: 1px; background: var(--accent);
+  }
+
+  .hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(68px, 12vw, 160px);
+    line-height: 0.9;
+    letter-spacing: -2px;
+    position: relative;
+  }
+  .hero h1 .line2 { color: var(--accent); display: block; }
+
+  .hero-sub {
+    font-size: 15px; color: var(--muted);
+    max-width: 400px;
+    line-height: 1.7;
+    margin-top: 24px;
+    position: relative;
+  }
+
+  .hero-actions {
+    display: flex; gap: 16px; margin-top: 36px;
+    position: relative;
+  }
+
+  .btn-primary {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px; letter-spacing: 1px;
+    background: var(--accent);
+    color: #fff; border: none;
+    padding: 14px 32px;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: transform 0.2s, background 0.2s;
+    display: inline-block;
+  }
+  .btn-primary:hover { background: #cc2a2a; transform: translateY(-2px); }
+
+  .btn-outline {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px; letter-spacing: 1px;
+    background: transparent;
+    color: var(--text); border: 1px solid var(--border);
+    padding: 14px 32px;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: border-color 0.2s, transform 0.2s;
+    display: inline-block;
+  }
+  .btn-outline:hover { border-color: var(--text); transform: translateY(-2px); }
+
+  /* FLOATING PHONE MOCKUP */
+  .hero-visual {
+    position: absolute; right: 6%; top: 50%;
+    transform: translateY(-50%);
+    width: 340px;
+    animation: float 4s ease-in-out infinite;
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(-50%) translateY(0); }
+    50% { transform: translateY(-50%) translateY(-18px); }
+  }
+  .phone-wrap {
+    width: 220px; height: 440px;
+    background: #1c1c1c;
+    border-radius: 38px;
+    border: 2px solid #333;
+    position: relative;
+    margin: auto;
+    box-shadow: 0 40px 120px rgba(0,0,0,0.8), 0 0 80px rgba(255,60,60,0.08);
+    overflow: hidden;
+  }
+  .phone-screen {
+    position: absolute; inset: 6px;
+    border-radius: 33px;
+    background: linear-gradient(140deg, #1a0800, #0d1a2a);
+    overflow: hidden;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 12px;
+  }
+  .phone-icon { font-size: 48px; }
+  .phone-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px; color: var(--accent);
+    letter-spacing: 2px; text-transform: uppercase;
+  }
+  .phone-notch {
+    position: absolute; top: 14px; left: 50%;
+    transform: translateX(-50%);
+    width: 80px; height: 22px;
+    background: #0a0a0a;
+    border-radius: 20px; z-index: 2;
+  }
+  .accessories-orbit {
+    position: absolute;
+    font-size: 22px;
+    animation: orbit 6s linear infinite;
+  }
+  @keyframes orbit {
+    0% { transform: rotate(0deg) translateX(140px) rotate(0deg); }
+    100% { transform: rotate(360deg) translateX(140px) rotate(-360deg); }
+  }
+
+  /* MARQUEE */
+  .marquee-wrap {
+    background: var(--accent);
+    overflow: hidden;
+    padding: 10px 0;
+    white-space: nowrap;
+  }
+  .marquee-track {
+    display: inline-flex;
+    animation: marquee 18s linear infinite;
+  }
+  .marquee-track span {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px; letter-spacing: 3px;
+    color: #fff; padding: 0 32px;
+    opacity: 0.9;
+  }
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* CATEGORIES */
+  .section { padding: 80px 28px; }
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px; letter-spacing: 3px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(38px, 6vw, 72px);
+    line-height: 1;
+    margin-bottom: 44px;
+  }
+
+  .cat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 12px;
+  }
+  .cat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 28px 18px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s, transform 0.2s, background 0.2s;
+    position: relative; overflow: hidden;
+  }
+  .cat-card::after {
+    content: '';
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 2px; background: var(--accent);
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.3s;
+  }
+  .cat-card:hover { border-color: var(--accent); transform: translateY(-4px); background: #1d1d1d; }
+  .cat-card:hover::after { transform: scaleX(1); }
+  .cat-icon { font-size: 34px; margin-bottom: 12px; }
+  .cat-name {
+    font-size: 13px; font-weight: 600; letter-spacing: 0.5px;
+    color: var(--text);
+  }
+  .cat-count {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px; color: var(--muted);
+    margin-top: 4px;
+  }
+
+  /* PRODUCTS */
+  .products-section { background: var(--off-black); }
+
+  .filter-bar {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    margin-bottom: 36px;
+  }
+  .filter-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px; letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 8px 18px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .filter-btn.active,
+  .filter-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(255,60,60,0.06);
+  }
+
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 16px;
+  }
+
+  .product-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.25s, border-color 0.25s;
+    display: flex; flex-direction: column;
+  }
+  .product-card:hover { transform: translateY(-6px); border-color: #444; }
+
+  .product-img {
+    height: 200px;
+    background: linear-gradient(135deg, #1a1a1a, #222);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 64px;
+    position: relative;
+    overflow: hidden;
+  }
+  .product-img::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(circle at 60% 40%, rgba(255,100,0,0.1), transparent 60%);
+  }
+
+  .badge {
+    position: absolute; top: 12px; left: 12px;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px; letter-spacing: 1px;
+    padding: 4px 10px;
+    text-transform: uppercase;
+  }
+  .badge-hot { background: var(--accent); color: #fff; }
+  .badge-new { background: #1a6b3a; color: #5fffaa; }
+  .badge-deal { background: var(--accent2); color: #000; }
+
+  .product-info { padding: 18px; flex: 1; display: flex; flex-direction: column; }
+  .product-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px; color: var(--accent);
+    letter-spacing: 1.5px; text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .product-name {
+    font-size: 14px; font-weight: 600; line-height: 1.4;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+  .product-rating {
+    display: flex; align-items: center; gap: 6px;
+    margin-bottom: 12px;
+  }
+  .stars { color: #ffb800; font-size: 12px; letter-spacing: -1px; }
+  .rating-count {
+    font-size: 11px; color: var(--muted);
+    font-family: 'Space Mono', monospace;
+  }
+
+  .product-footer {
+    display: flex; align-items: center;
+    justify-content: space-between;
+    margin-top: auto;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+  }
+  .price-wrap {}
+  .price {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 26px; color: var(--accent);
+    letter-spacing: 1px;
+  }
+  .price-orig {
+    font-size: 12px; color: var(--muted);
+    text-decoration: line-through;
+    margin-left: 4px;
+  }
+  .discount-pct {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px; color: #5fffaa;
+    margin-top: 1px;
+  }
+
+  .buy-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px; letter-spacing: 1px;
+    text-transform: uppercase;
+    background: var(--accent);
+    color: #fff; border: none;
+    padding: 10px 16px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: background 0.2s;
+    white-space: nowrap;
+  }
+  .buy-btn:hover { background: #cc2a2a; }
+
+  /* DEAL BANNER */
+  .deal-banner {
+    margin: 0 28px;
+    background: linear-gradient(110deg, #1a0500, #0a0a0a);
+    border: 1px solid var(--accent);
+    padding: 48px 40px;
+    display: flex; align-items: center;
+    justify-content: space-between; gap: 32px;
+    position: relative; overflow: hidden;
+  }
+  .deal-banner::before {
+    content: 'DEAL';
+    position: absolute; right: -20px; top: 50%;
+    transform: translateY(-50%) rotate(90deg);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 120px; color: rgba(255,60,60,0.04);
+    letter-spacing: 8px;
+  }
+  .deal-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(36px, 5vw, 64px);
+    line-height: 1;
+  }
+  .deal-title em { color: var(--accent); font-style: normal; }
+  .deal-sub { color: var(--muted); font-size: 14px; margin-top: 8px; max-width: 340px; }
+
+  .countdown {
+    display: flex; gap: 16px;
+  }
+  .cd-block {
+    text-align: center;
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 14px 20px;
+    min-width: 70px;
+  }
+  .cd-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 42px; color: var(--accent);
+    line-height: 1;
+  }
+  .cd-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px; color: var(--muted);
+    letter-spacing: 2px; text-transform: uppercase;
+  }
+
+  /* WHY US */
+  .why-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 2px;
+    border: 1px solid var(--border);
+  }
+  .why-card {
+    background: var(--card);
+    padding: 36px 28px;
+    border-right: 1px solid var(--border);
+    transition: background 0.2s;
+  }
+  .why-card:hover { background: #1a1a1a; }
+  .why-icon { font-size: 32px; margin-bottom: 16px; }
+  .why-title { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+  .why-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+  /* NEWSLETTER */
+  .newsletter {
+    background: var(--off-black);
+    padding: 80px 28px;
+    text-align: center;
+    border-top: 1px solid var(--border);
+  }
+  .newsletter-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(42px, 7vw, 80px);
+    line-height: 1;
+    margin-bottom: 16px;
+  }
+  .newsletter-title span { color: var(--accent); }
+  .newsletter-sub {
+    color: var(--muted); font-size: 14px;
+    max-width: 420px; margin: 0 auto 36px;
+    line-height: 1.7;
+  }
+  .email-form {
+    display: flex; gap: 0;
+    max-width: 440px; margin: 0 auto;
+  }
+  .email-input {
+    flex: 1;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-right: none;
+    color: var(--text);
+    padding: 14px 18px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .email-input:focus { border-color: var(--accent); }
+  .email-input::placeholder { color: var(--muted); }
+  .email-submit {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px; letter-spacing: 1px;
+    text-transform: uppercase;
+    background: var(--accent);
+    color: #fff; border: none;
+    padding: 14px 24px;
+    cursor: pointer;
+    transition: background 0.2s;
+    white-space: nowrap;
+  }
+  .email-submit:hover { background: #cc2a2a; }
+
+  /* FOOTER */
+  footer {
+    background: var(--off-black);
+    border-top: 1px solid var(--border);
+    padding: 40px 28px 24px;
+  }
+  .footer-top {
+    display: flex; justify-content: space-between;
+    align-items: flex-start; gap: 32px;
+    flex-wrap: wrap;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+  }
+  .footer-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px; letter-spacing: 2px;
+  }
+  .footer-logo span { color: var(--accent); }
+  .footer-desc {
+    font-size: 13px; color: var(--muted);
+    max-width: 240px; line-height: 1.6; margin-top: 10px;
+  }
+  .footer-links h4 {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--text);
+    margin-bottom: 16px;
+  }
+  .footer-links ul { list-style: none; }
+  .footer-links li { margin-bottom: 10px; }
+  .footer-links a {
+    font-size: 13px; color: var(--muted);
+    text-decoration: none; transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--text); }
+
+  .footer-bottom {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-top: 24px; flex-wrap: wrap; gap: 12px;
+  }
+  .footer-copy {
+    font-size: 12px; color: var(--muted);
+    font-family: 'Space Mono', monospace;
+  }
+  .affiliate-note {
+    font-size: 11px; color: var(--muted);
+    font-family: 'Space Mono', monospace;
+    max-width: 360px; text-align: right; line-height: 1.5;
+  }
+
+  /* MOBILE */
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .hero-visual { display: none; }
+    .deal-banner { flex-direction: column; }
+    .countdown { flex-wrap: wrap; }
+    .footer-top { flex-direction: column; }
+    .affiliate-note { text-align: left; }
+    .hero { padding: 0 20px 48px; padding-top: 90px; }
+    .email-form { flex-direction: column; }
+    .email-input { border-right: 1px solid var(--border); border-bottom: none; }
+  }
+
+  /* Animations */
+  .fade-in {
+    opacity: 0; transform: translateY(24px);
+    animation: fadeIn 0.7s forwards;
+  }
+  @keyframes fadeIn {
+    to { opacity: 1; transform: none; }
+  }
+  .fade-in:nth-child(1) { animation-delay: 0.1s; }
+  .fade-in:nth-child(2) { animation-delay: 0.2s; }
+  .fade-in:nth-child(3) { animation-delay: 0.3s; }
+  .fade-in:nth-child(4) { animation-delay: 0.4s; }
+
+  /* Pulse dot */
+  .live-dot {
+    display: inline-block; width: 8px; height: 8px;
+    background: var(--accent); border-radius: 50%;
+    animation: pulse 1.4s ease-in-out infinite;
+    margin-right: 6px;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.4); }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">Gear<span>Drop</span></div>
+  <ul class="nav-links">
+    <li><a href="#categories">Categories</a></li>
+    <li><a href="#products">Products</a></li>
+    <li><a href="#deals">Deals</a></li>
+    <li><a href="#newsletter">Newsletter</a></li>
+  </ul>
+  <a href="#products" class="nav-cta">Shop Now</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+
+  <div class="hero-visual">
+    <div style="position:relative; width:220px; margin:auto;">
+      <div class="phone-wrap">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="phone-icon">📱</div>
+          <div class="phone-label">Gear Up</div>
+        </div>
+      </div>
+      <div class="accessories-orbit" style="top:50%;left:50%;transform-origin:0 0;">🎧</div>
+    </div>
+  </div>
+
+  <div class="hero-badge fade-in">
+    <span class="live-dot"></span> AliExpress Picks — Updated Daily
+  </div>
+  <h1 class="fade-in">
+    Level Up<br>
+    <span class="line2">Your Phone.</span>
+  </h1>
+  <p class="hero-sub fade-in">Handpicked mobile accessories from AliExpress. Unbeatable prices. Shipped worldwide.</p>
+  <div class="hero-actions fade-in">
+    <a href="#products" class="btn-primary">Browse Deals</a>
+    <a href="#deals" class="btn-outline">Today's Offers</a>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <span>🔥 Fast Charging Cables</span>
+    <span>⚡ MagSafe Chargers</span>
+    <span>🎧 Wireless Earbuds</span>
+    <span>🛡️ Phone Cases</span>
+    <span>💡 Ring Lights</span>
+    <span>📷 Camera Lenses</span>
+    <span>🔋 Power Banks</span>
+    <span>🖥️ Screen Protectors</span>
+    <!-- repeat for seamless loop -->
+    <span>🔥 Fast Charging Cables</span>
+    <span>⚡ MagSafe Chargers</span>
+    <span>🎧 Wireless Earbuds</span>
+    <span>🛡️ Phone Cases</span>
+    <span>💡 Ring Lights</span>
+    <span>📷 Camera Lenses</span>
+    <span>🔋 Power Banks</span>
+    <span>🖥️ Screen Protectors</span>
+  </div>
+</div>
+
+<!-- CATEGORIES -->
+<section class="section" id="categories">
+  <div class="section-label">Browse By Type</div>
+  <div class="section-title">Categories</div>
+  <div class="cat-grid">
+    <div class="cat-card" onclick="filterProducts('Cases')">
+      <div class="cat-icon">🛡️</div>
+      <div class="cat-name">Phone Cases</div>
+      <div class="cat-count">420+ items</div>
+    </div>
+    <div class="cat-card" onclick="filterProducts('Audio')">
+      <div class="cat-icon">🎧</div>
+      <div class="cat-name">Audio</div>
+      <div class="cat-count">310+ items</div>
+    </div>
+    <div class="cat-card" onclick="filterProducts('Chargers')">
+      <div class="cat-icon">⚡</div>
+      <div class="cat-name">Chargers</div>
+      <div class="cat-count">280+ items</div>
+    </div>
+    <div class="cat-card" onclick="filterProducts('Camera')">
+      <div class="cat-icon">📷</div>
+      <div class="cat-name">Camera Gear</div>
+      <div class="cat-count">190+ items</div>
+    </div>
+    <div class="cat-card" onclick="filterProducts('Power')">
+      <div class="cat-icon">🔋</div>
+      <div class="cat-name">Power Banks</div>
+      <div class="cat-count">160+ items</div>
+    </div>
+    <div class="cat-card" onclick="filterProducts('Screen')">
+      <div class="cat-icon">🖥️</div>
+      <div class="cat-name">Screen Protectors</div>
+      <div class="cat-count">220+ items</div>
+    </div>
+    <div class="cat-card" onclick="filterProducts('Mounts')">
+      <div class="cat-icon">🚗</div>
+      <div class="cat-name">Car Mounts</div>
+      <div class="cat-count">140+ items</div>
+    </div>
+    <div class="cat-card" onclick="filterProducts('all')">
+      <div class="cat-icon">✨</div>
+      <div class="cat-name">All Products</div>
+      <div class="cat-count">1700+ items</div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<section class="section products-section" id="products">
+  <div class="section-label">Hand-Picked Finds</div>
+  <div class="section-title">Top Picks</div>
+
+  <div class="filter-bar">
+    <button class="filter-btn active" onclick="filterProducts('all', this)">All</button>
+    <button class="filter-btn" onclick="filterProducts('Cases', this)">Cases</button>
+    <button class="filter-btn" onclick="filterProducts('Audio', this)">Audio</button>
+    <button class="filter-btn" onclick="filterProducts('Chargers', this)">Chargers</button>
+    <button class="filter-btn" onclick="filterProducts('Camera', this)">Camera</button>
+    <button class="filter-btn" onclick="filterProducts('Power', this)">Power Banks</button>
+  </div>
+
+  <div class="products-grid" id="productsGrid">
+    <!-- Cards injected by JS -->
+  </div>
+</section>
+
+<!-- DEAL BANNER -->
+<div id="deals" style="padding: 0 0 80px;">
+<div class="deal-banner" style="margin: 0 28px;">
+  <div>
+    <div class="deal-title">Flash Sale<br><em>Up to 70% Off</em></div>
+    <div class="deal-sub">Exclusive deals on top-rated AliExpress products. Limited time only — grab yours before it's gone.</div>
+    <a href="https://s.click.aliexpress.com/e/_DdD..." class="btn-primary" style="margin-top:28px; display:inline-block;" target="_blank" rel="noopener noreferrer">Claim Deal</a>
+  </div>
+  <div class="countdown" id="countdown">
+    <div class="cd-block"><div class="cd-num" id="cd-h">08</div><div class="cd-label">Hours</div></div>
+    <div class="cd-block"><div class="cd-num" id="cd-m">45</div><div class="cd-label">Mins</div></div>
+    <div class="cd-block"><div class="cd-num" id="cd-s">00</div><div class="cd-label">Secs</div></div>
+  </div>
+</div>
+</div>
+
+<!-- WHY US -->
+<section class="section" style="padding-top: 0;">
+  <div class="section-label">Why GearDrop</div>
+  <div class="section-title">We Do The<br>Research.</div>
+  <div class="why-grid">
+    <div class="why-card">
+      <div class="why-icon">🔍</div>
+      <div class="why-title">Curated Picks</div>
+      <div class="why-desc">Every product is vetted for quality, ratings, and real buyer reviews before it lands here.</div>
+    </div>
+    <div class="why-card">
+      <div class="why-icon">💸</div>
+      <div class="why-title">Best Prices</div>
+      <div class="why-desc">We track price drops and flash sales on AliExpress so you never overpay.</div>
+    </div>
+    <div class="why-card">
+      <div class="why-icon">🚀</div>
+      <div class="why-title">Fast Shipping</div>
+      <div class="why-desc">Filter for AliExpress Choice and local warehouse items for quicker delivery.</div>
+    </div>
+    <div class="why-card">
+      <div class="why-icon">🛡️</div>
+      <div class="why-title">Buyer Protection</div>
+      <div class="why-desc">All links go through AliExpress's secure platform with full buyer protection.</div>
+    </div>
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<section class="newsletter" id="newsletter">
+  <div class="newsletter-title">Never Miss<br>A <span>Deal.</span></div>
+  <div class="newsletter-sub">Join 12,000+ deal hunters getting weekly drops of the best AliExpress mobile accessories.</div>
+  <div class="email-form">
+    <input class="email-input" type="email" id="emailInput" placeholder="your@email.com">
+    <button class="email-submit" onclick="subscribeEmail()">Subscribe</button>
+  </div>
+  <div id="sub-msg" style="margin-top:16px; font-family:'Space Mono',monospace; font-size:12px; color:#5fffaa; display:none;">
+    ✓ You're in! Check your inbox.
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="footer-logo">Gear<span>Drop</span></div>
+      <div class="footer-desc">Your trusted source for handpicked AliExpress mobile accessories at the best prices.</div>
+    </div>
+    <div class="footer-links">
+      <h4>Categories</h4>
+      <ul>
+        <li><a href="#">Phone Cases</a></li>
+        <li><a href="#">Earbuds & Audio</a></li>
+        <li><a href="#">Chargers & Cables</a></li>
+        <li><a href="#">Power Banks</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>Info</h4>
+      <ul>
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Affiliate Disclosure</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2026 GearDrop — All Rights Reserved</div>
+    <div class="affiliate-note">⚠ Affiliate Disclosure: We may earn a commission from purchases made through our AliExpress links at no extra cost to you.</div>
+  </div>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+  function animCursor() {
+    cursor.style.left = mx - 5 + 'px';
+    cursor.style.top = my - 5 + 'px';
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx - 18 + 'px';
+    ring.style.top = ry - 18 + 'px';
+    requestAnimationFrame(animCursor);
+  }
+  animCursor();
+
+  // Products data
+  const products = [
+    {
+      id: 1, category: 'Audio', badge: 'hot', badgeLabel: 'HOT',
+      emoji: '🎧', tag: 'Wireless Earbuds',
+      name: 'Pro TWS Earbuds — 48hr Battery, ANC, IPX5',
+      stars: '★★★★★', reviews: '18.4k',
+      price: '$14.99', origPrice: '$39.99', discount: '-63%',
+      link: 'https://www.aliexpress.com/'
+    },
+    {
+      id: 2, category: 'Chargers', badge: 'deal', badgeLabel: 'DEAL',
+      emoji: '⚡', tag: 'Fast Charger',
+      name: '65W GaN USB-C Charger — Multi-Port Compact',
+      stars: '★★★★☆', reviews: '9.2k',
+      price: '$11.50', origPrice: '$28.00', discount: '-59%',
+      link: 'https://www.aliexpress.com/'
+    },
+    {
+      id: 3, category: 'Cases', badge: 'new', badgeLabel: 'NEW',
+      emoji: '🛡️', tag: 'Phone Case',
+      name: 'Military-Grade Shockproof Case — All iPhone Models',
+      stars: '★★★★★', reviews: '34.1k',
+      price: '$4.20', origPrice: '$12.00', discount: '-65%',
+      link: 'https://www.aliexpress.com/'
+    },
+    {
+      id: 4, category: 'Camera', badge: null, badgeLabel: '',
+      emoji: '📷', tag: 'Camera Lens',
+      name: '22x Universal Clip Zoom Lens Kit — Wide + Macro',
+      stars: '★★★★☆', reviews: '5.7k',
+      price: '$9.99', origPrice: '$22.00', discount: '-55%',
+      link: 'https://www.aliexpress.com/'
+    },
+    {
+      id: 5, category: 'Power', badge: 'hot', badgeLabel: 'HOT',
+      emoji: '🔋', tag: 'Power Bank',
+      name: '20000mAh Slim Power Bank — 22.5W Fast Charge',
+      stars: '★★★★★', reviews: '21.0k',
+      price: '$16.80', origPrice: '$45.00', discount: '-63%',
+      link: 'https://www.aliexpress.com/'
+    },
+    {
+      id: 6, category: 'Chargers', badge: null, badgeLabel: '',
+      emoji: '🔌', tag: 'Charging Cable',
+      name: '100W USB-C Braided Cable — 2m Fast Data Transfer',
+      stars: '★★★★★', reviews: '42.3k',
+      price: '$2.99', origPrice: '$8.99', discount: '-67%',
+      link: 'https://www.aliexpress.com/'
+    },
+    {
+      id: 7, category: 'Audio', badge: 'deal', badgeLabel: 'DEAL',
+      emoji: '🎵', tag: 'Bluetooth Speaker',
+      name: 'Mini RGB Speaker — 360° Sound, Waterproof IPX7',
+      stars: '★★★★☆', reviews: '13.9k',
+      price: '$12.50', origPrice: '$32.00', discount: '-61%',
+      link: 'https://www.aliexpress.com/'
+    },
+    {
+      id: 8, category: 'Cases', badge: null, badgeLabel: '',
+      emoji: '💳', tag: 'Wallet Case',
+      name: 'Leather MagSafe Wallet Case — Card Slots + Stand',
+      stars: '★★★★★', reviews: '7.8k',
+      price: '$7.49', origPrice: '$19.00', discount: '-61%',
+      link: 'https://www.aliexpress.com/'
+    },
+  ];
+
+  function renderProducts(filter) {
+    const grid = document.getElementById('productsGrid');
+    const filtered = filter === 'all' ? products : products.filter(p => p.category === filter);
+    grid.innerHTML = filtered.map(p => `
+      <div class="product-card">
+        <div class="product-img">
+          ${p.badge ? `<div class="badge badge-${p.badge}">${p.badgeLabel}</div>` : ''}
+          ${p.emoji}
+        </div>
+        <div class="product-info">
+          <div class="product-tag">${p.tag}</div>
+          <div class="product-name">${p.name}</div>
+          <div class="product-rating">
+            <span class="stars">${p.stars}</span>
+            <span class="rating-count">(${p.reviews})</span>
+          </div>
+          <div class="product-footer">
+            <div class="price-wrap">
+              <span class="price">${p.price}</span>
+              <span class="price-orig">${p.origPrice}</span>
+              <div class="discount-pct">${p.discount}</div>
+            </div>
+            <a href="${p.link}" class="buy-btn" target="_blank" rel="noopener noreferrer">Buy →</a>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function filterProducts(cat, btn) {
+    renderProducts(cat);
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+  }
+
+  renderProducts('all');
+
+  // Countdown timer (8 hours from page load)
+  let totalSecs = 8 * 3600 + 45 * 60;
+  function updateCountdown() {
+    const h = Math.floor(totalSecs / 3600);
+    const m = Math.floor((totalSecs % 3600) / 60);
+    const s = totalSecs % 60;
+    document.getElementById('cd-h').textContent = String(h).padStart(2, '0');
+    document.getElementById('cd-m').textContent = String(m).padStart(2, '0');
+    document.getElementById('cd-s').textContent = String(s).padStart(2, '0');
+    if (totalSecs > 0) totalSecs--;
+  }
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+
+  // Email subscribe
+  function subscribeEmail() {
+    const val = document.getElementById('emailInput').value;
+    if (val.includes('@')) {
+      document.getElementById('sub-msg').style.display = 'block';
+      document.getElementById('emailInput').value = '';
+    }
+  }
+</script>
+</body>
+</html>
